@@ -1,6 +1,7 @@
 "use client";
 
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 
 interface Todo {
@@ -16,6 +17,7 @@ function CreateTodo() {
     status: false,
   });
 
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +39,7 @@ function CreateTodo() {
         description: "",
         status: false,
       });
+      router.push("/");
       setIsLoading(false);
     } catch (error) {
       console.log(error);
