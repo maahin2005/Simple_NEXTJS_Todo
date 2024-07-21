@@ -4,15 +4,32 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+interface Todo {
+  id: string;
+  title: string;
+  description: string;
+  status: boolean;
+  createdAt: string; // or Date if you prefer
+}
+
 function DisplayTodos() {
   const router = useRouter();
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
 
   const getAllTodos = async () => {
     try {
       const resp = await axios.get("/api/tasks");
-      //   console.log("DATA: RESP: ", resp.data);
       setTodos(resp.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteTodo = async (id: string) => {
+    try {
+      const resp = await axios.delete(`/api/tasks/id=${id}`);
+
+      console.log("RESP: ", resp.data);
     } catch (error) {
       console.log(error);
     }
@@ -35,12 +52,23 @@ function DisplayTodos() {
             todos.map((el) => (
               <div
                 key={el.id}
-                className="p-3 bg-gray-900 grid h-[200px] border-b-2"
+                className="p-3 bg-gray-900 grid min-h-[300px] h-fit border-b-2 gap-3"
               >
                 <h1>{el.title}</h1>
                 <h2>description: {el.description}</h2>
                 <h3>status: {el.status ? "Completed" : "In-Process"}</h3>
                 <h4>Created Date: {el.createdAt}</h4>
+                <div className="flex gap-2">
+                  <button
+                    className="bg-slate-600 py-2 w-1/2 hover:bg-slate-700"
+                    onClick={() => handleDeleteTodo(el.id)}
+                  >
+                    Delete
+                  </button>
+                  <button className="bg-slate-600 py-2 w-1/2 hover:bg-slate-700">
+                    Edit
+                  </button>
+                </div>
               </div>
             ))
           ) : (
