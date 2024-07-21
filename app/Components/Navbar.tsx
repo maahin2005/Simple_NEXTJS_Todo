@@ -18,7 +18,7 @@ function Navbar() {
           onClick={handleNavigate}
           className="font-semibold border-2 border-transparent border-b-white hover:border-white px-3 p-1 bg-slate-800"
         >
-          Add Todo
+          New Todo
         </button>
         <ul className="flex justify-between gap-5">
           <Link href={"/"}>
