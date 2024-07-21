@@ -7,7 +7,6 @@ export const POST = async (req: NextRequest) => {
   try {
     const { title, description, status } = await req.json();
 
-    // Validate the input
     if (
       typeof title !== "string" ||
       typeof description !== "string" ||
@@ -40,6 +39,36 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
     const todos = await prisma.todos.findMany();
 
     return NextResponse.json({ data: todos, status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 500 }
+    );
+  }
+};
+
+export const PATCH = async (req: NextRequest, res: NextResponse) => {
+  try {
+    const url = new URL(req.url);
+    const id = url.searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+    }
+    const { status } = await req.json();
+
+    await prisma.todos.update({
+      where: { id },
+      data: {
+        status: status,
+      },
+    });
+
+    return NextResponse.json(
+      { msg: "Todo Updated Successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json(
