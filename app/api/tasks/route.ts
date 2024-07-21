@@ -48,3 +48,29 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
     );
   }
 };
+
+export const DELETE = async (req: NextRequest, res: NextResponse) => {
+  try {
+    const url = new URL(req.url);
+    const id = url.searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+    }
+
+    await prisma.todos.delete({
+      where: { id },
+    });
+
+    return NextResponse.json(
+      { msg: "Todo Deleted Successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 500 }
+    );
+  }
+};
